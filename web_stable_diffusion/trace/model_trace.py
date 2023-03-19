@@ -11,14 +11,17 @@ from tvm.script import relax as R
 
 
 def clip_to_text_embeddings(pipe) -> tvm.IRModule:
+
+
+
     class CLIPModelWrapper(torch.nn.Module):
         def __init__(self, clip):
             super().__init__()
             self.clip = clip
 
         def forward(self, text_input_ids):
-            text_embeddings = self.clip(text_input_ids)[0]
-            return text_embeddings
+            return self.clip(text_input_ids)[0]
+
 
     clip = pipe.text_encoder
     clip_to_text_embeddings = CLIPModelWrapper(clip)

@@ -46,7 +46,7 @@ def split_transform_deploy_mod(
     mod_transform = tvm.IRModule()
     mod_deploy = tvm.IRModule()
 
-    transform_func_names = [name + "_transform_params" for name in model_names]
+    transform_func_names = [f"{name}_transform_params" for name in model_names]
     for gv in mod.functions:
         func = mod[gv]
         if isinstance(func, tvm.tir.PrimFunc):
@@ -72,10 +72,10 @@ def transform_params(
 ) -> Dict[str, List[tvm.nd.NDArray]]:
     ex = relax.build(mod_transform, target="llvm")
     vm = relax.vm.VirtualMachine(ex, tvm.cpu())
-    new_params = dict()
-    for name, params in model_params.items():
-        new_params[name] = vm[name + "_transform_params"](params)
-    return new_params
+    return {
+        name: vm[f"{name}_transform_params"](params)
+        for name, params in model_params.items()
+    }
 
 
 def save_params(params: Dict[str, List[tvm.nd.NDArray]], artifact_path: str) -> None:
@@ -96,9 +96,7 @@ def load_params(artifact_path: str, device) -> Dict[str, List[tvm.nd.NDArray]]:
     pdict = {}
     params, meta = tvmjs.load_ndarray_cache(f"{artifact_path}/params", device)
     for model in ["vae", "unet", "clip"]:
-        plist = []
         size = meta[f"{model}ParamSize"]
-        for i in range(size):
-            plist.append(params[f"{model}_{i}"])
+        plist = [params[f"{model}_{i}"] for i in range(size)]
         pdict[model] = plist
     return pdict

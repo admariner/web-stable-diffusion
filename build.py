@@ -153,17 +153,16 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(ARGS.artifact_path, "debug"), exist_ok=True)
     torch_dev_key = utils.detect_available_torch_device()
     cache_path = os.path.join(ARGS.artifact_path, "mod_cache_before_build.pkl")
-    use_cache = ARGS.use_cache and os.path.isfile(cache_path)
-    if not use_cache:
-        mod, params = trace_models(torch_dev_key)
-        mod = legalize_and_lift_params(mod, params, ARGS)
-        with open(cache_path, "wb") as outfile:
-            pickle.dump(mod, outfile)
-        print(f"Save a cached module to {cache_path}.")
-    else:
+    if use_cache := ARGS.use_cache and os.path.isfile(cache_path):
         print(
             f"Load cached module from {cache_path} and skip tracing. "
             "You can use --use-cache=0 to retrace"
         )
         mod = pickle.load(open(cache_path, "rb"))
+    else:
+        mod, params = trace_models(torch_dev_key)
+        mod = legalize_and_lift_params(mod, params, ARGS)
+        with open(cache_path, "wb") as outfile:
+            pickle.dump(mod, outfile)
+        print(f"Save a cached module to {cache_path}.")
     build(mod, ARGS)

@@ -90,7 +90,7 @@ class RPCBaseDebugSession:
                 self.vm.module["set_input"](func_name, *new_args)
 
             self.vm.invoke_stateful(func_name)
-            if time_eval_kwargs is not None and len(time_eval_result) == 0:
+            if time_eval_kwargs is not None and not time_eval_result:
                 res = self.vm.time_evaluator("invoke_stateful", self.device)(
                     func_name, **time_eval_kwargs
                 )
@@ -130,13 +130,12 @@ def connect_to_proxy(wasm_path):
     proxy_host = os.environ.get("TVM_RPC_PROXY_HOST", "127.0.0.1")
     proxy_port = int(os.environ.get("TVM_RPC_PROXY_PORT", "9090"))
     wasm_binary = open(wasm_path, "rb").read()
-    remote = rpc.connect(
+    return rpc.connect(
         proxy_host,
         proxy_port,
         key="wasm",
         session_constructor_args=["rpc.WasmSession", wasm_binary],
     )
-    return remote
 
 
 class WebGPUDebugSession(RPCBaseDebugSession):

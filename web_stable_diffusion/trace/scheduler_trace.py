@@ -213,8 +213,8 @@ class DPMSolverMultistepScheduler(Scheduler):
         # Scheduler convert_model_output
         sample = relax.Var("sample", R.Tensor((1, 4, 64, 64), "float32"))
         model_output = relax.Var("model_output", R.Tensor((1, 4, 64, 64), "float32"))
-        alpha = relax.Var(f"alpha", R.Tensor((), "float32"))
-        sigma = relax.Var(f"sigma", R.Tensor((), "float32"))
+        alpha = relax.Var("alpha", R.Tensor((), "float32"))
+        sigma = relax.Var("sigma", R.Tensor((), "float32"))
         with bb.function(
             "dpm_solver_multistep_scheduler_convert_model_output",
             [sample, model_output, alpha, sigma],

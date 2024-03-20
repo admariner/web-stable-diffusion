@@ -99,11 +99,7 @@ class Downsample2D(nn.Module):
         # TODO(Suraj, Patrick) - clean up after weight dicts are correctly renamed
         if name == "conv":
             self.Conv2d_0 = conv
-            self.conv = conv
-        elif name == "Conv2d_0":
-            self.conv = conv
-        else:
-            self.conv = conv
+        self.conv = conv
 
     def forward(self, hidden_states):
         # assert hidden_states.shape[1] == self.channels
@@ -241,9 +237,7 @@ class ResnetBlock2D(nn.Module):
         if self.conv_shortcut is not None:
             input_tensor = self.conv_shortcut(input_tensor)
 
-        output_tensor = (input_tensor + hidden_states) / self.output_scale_factor
-
-        return output_tensor
+        return (input_tensor + hidden_states) / self.output_scale_factor
 
 
 class Mish(torch.nn.Module):

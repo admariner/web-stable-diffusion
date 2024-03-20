@@ -63,7 +63,7 @@ class PNDMScheduler(Scheduler):
         elif counter == 1:
             sample = self.cur_sample
 
-        prev_latents = vm[f"pndm_scheduler_step_{min(counter, 4)}"](
+        return vm[f"pndm_scheduler_step_{min(counter, 4)}"](
             sample,
             model_output,
             self.sample_coeff[counter],
@@ -74,8 +74,6 @@ class PNDMScheduler(Scheduler):
             self.ets[2],
             self.ets[3],
         )
-
-        return prev_latents
 
 
 class DPMSolverMultistepScheduler(Scheduler):

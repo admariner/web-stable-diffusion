@@ -32,7 +32,7 @@ def main_unet(args):
         os.path.join(args.artifact_path, "stable_diffusion_webgpu.wasm")
     )
     unet_input = load_checkpt(args, f"unet_input_{args.counter}")
-    text_embeddings = load_checkpt(args, f"text_embeddings")
+    text_embeddings = load_checkpt(args, "text_embeddings")
     timestep = load_checkpt(args, f"timestep_{args.counter}")
     unet_output = load_checkpt(args, f"unet_output_{args.counter}")
     nparams = load_metadata(args)["unetParamSize"]
@@ -47,8 +47,7 @@ def _parse_args():
     args.add_argument("--stage", type=str, choices=["unet", "vae"], required=True)
     args.add_argument("--counter", type=int, default=0)
     args.add_argument("--time-eval", default=False, action="store_true")
-    parsed = args.parse_args()
-    return parsed
+    return args.parse_args()
 
 
 if __name__ == "__main__":

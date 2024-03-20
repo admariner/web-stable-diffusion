@@ -89,14 +89,13 @@ class Timesteps(nn.Module):
         self.device = device
 
     def forward(self, timesteps):
-        t_emb = get_timestep_embedding(
+        return get_timestep_embedding(
             timesteps,
             self.num_channels,
             flip_sin_to_cos=self.flip_sin_to_cos,
             downscale_freq_shift=self.downscale_freq_shift,
             device=self.device,
         )
-        return t_emb
 
 
 class TVMUNet2DConditionModel(nn.Module):
